@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from "react";
 import { Alert, Button, Form, Input, Modal, Tabs } from "antd";
-import { HttpError } from "./api";
+import { HttpError, NetworkError } from "./api";
 import { useAuth } from "./AuthProvider";
 
 type Props = {
@@ -18,6 +18,8 @@ function errorToMessage(code?: string) {
       return "Неверный логин или пароль.";
     case "SERVER_ERROR":
       return "Ошибка сервера. Попробуйте позже.";
+    case "API_UNREACHABLE":
+      return "Backend API недоступен (скорее всего не запущен Postgres/сервер). Поднимите БД и backend, затем повторите.";
     default:
       return "Не удалось выполнить действие. Попробуйте ещё раз.";
   }
@@ -49,6 +51,7 @@ export function AuthModal({ open, onClose }: Props) {
       onClose();
     } catch (e) {
       if (e instanceof HttpError) setError(errorToMessage(e.code));
+      else if (e instanceof NetworkError) setError(errorToMessage(e.message));
       else setError("Неизвестная ошибка.");
     } finally {
       setSubmitting(false);

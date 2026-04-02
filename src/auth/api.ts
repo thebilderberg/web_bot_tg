@@ -19,15 +19,25 @@ export class HttpError extends Error {
   }
 }
 
+export class NetworkError extends Error {
+  // Keep message as an error code (e.g., API_UNREACHABLE)
+}
+
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
-  const res = await fetch(path, {
-    ...init,
-    headers: {
-      "content-type": "application/json",
-      ...(init?.headers ?? {})
-    },
-    credentials: "include"
-  });
+  let res: Response;
+  try {
+    res = await fetch(path, {
+      ...init,
+      headers: {
+        "content-type": "application/json",
+        ...(init?.headers ?? {})
+      },
+      credentials: "include"
+    });
+  } catch {
+    // Typically happens when backend is down and CRA proxy can't connect.
+    throw new NetworkError("API_UNREACHABLE");
+  }
 
   if (!res.ok) {
     let code: string | undefined;
