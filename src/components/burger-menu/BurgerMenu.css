@@ -1,5 +1,33 @@
 .Burger {
-    position: absolute;
-    left: 0px;
-    top: 0px;
+    position: relative;
+}
+
+.BurgerButton {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.BurgerPopover .ant-popover-inner {
+    padding: 0;
+    background: transparent;
+    box-shadow: none;
+}
+
+.BurgerMenuPanel {
+    width: 280px;
+    background: #001529; /* AntD dark */
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+}
+
+.BurgerMenu {
+    width: 100%;
+    max-height: min(70vh, 520px);
+    overflow: auto;
+    border-inline-end: none;
 }

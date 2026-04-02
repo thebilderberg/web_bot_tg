@@ -1,0 +1,17 @@
+services:
+  db:
+    image: postgres:16
+    container_name: web_bot_tg_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-webbot}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-webbot_password}
+      POSTGRES_DB: ${POSTGRES_DB:-webbot}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+      - ./db/init:/docker-entrypoint-initdb.d:ro
+
+volumes:
+  db_data:
