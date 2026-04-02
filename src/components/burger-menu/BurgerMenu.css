@@ -3,8 +3,8 @@
 }
 
 .BurgerButton {
-    width: 48px;
-    height: 48px;
+    width: 50px !important;
+    height: 50px !important;
     border-radius: 12px;
     display: inline-flex;
     align-items: center;
