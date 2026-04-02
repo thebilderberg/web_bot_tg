@@ -1,30 +1,44 @@
 ## How to run (dev)
 
 ### 1) Database (Postgres)
-Recommended (Docker):
+Рекомендуется (Docker):
 
 ```bash
 cd web_bot_tg
 docker compose up -d
 ```
 
-If Docker is not available, install Postgres locally and set `DATABASE_URL` for the backend.
+Если Docker недоступен, установите PostgreSQL локально и задайте `DATABASE_URL` для бэкенда.
 
-#### Windows (no Docker): local Postgres
+#### Windows (без Docker): локальный PostgreSQL
 
-1) Install PostgreSQL (recommended v16+) and make sure `psql.exe` is available (either add `...\PostgreSQL\16\bin` to `PATH`, or pass `-PostgresBin` to the script below).
-2) Initialize DB/user/schema by running:
+1) Установите PostgreSQL (рекомендуется версия 16+) и убедитесь, что `psql.exe` доступен (либо добавьте `...\PostgreSQL\16\bin` в `PATH`, либо передайте `-PostgresBin` скрипту ниже).
+
+2) Инициализируйте БД/пользователей/схему, выполнив:
 
 ```powershell
 cd web_bot_tg
 .\scripts\init-db.ps1
 ```
 
-If your `postgres` superuser password is required, PowerShell will prompt via `psql` authentication (depending on your local setup).
+Если требуется пароль суперпользователя `postgres`, PowerShell запросит его через аутентификацию `psql` (в зависимости от настроек вашей локальной системы).
 
 ### 2) Backend API
 
-Create `web_bot_tg/server/.env` based on `web_bot_tg/server/.env.example`.
+# Создать .env для backend'а
+cd server
+cp .env.example .env
+
+# Отредактировать .env (можно через nano или другой редактор)
+nano .env
+
+Убедитесь, что в server/.env есть:
+PORT=4000
+DATABASE_URL="postgresql://postgres:postgres@localhost:5432/web_bot_tg"
+SESSION_SECRET="ваш_секретный_ключ_тут"
+FRONTEND_ORIGIN="http://localhost:3000"
+SEED_USERS="true"
+SEED_PASSWORD="Test12345!"
 
 ```bash
 cd web_bot_tg
@@ -50,8 +64,8 @@ npm start
 
 Frontend default: `http://localhost:3000` (or next free port)
 
-## Notes (Windows)
-- If you already had `node_modules` committed in git, this repo now ignores them and removes them from git tracking (best practice). After pulling these changes, run `npm install` to restore dependencies locally.
+## Примечания (Windows)
+- Если у вас уже были добавлены зависимости `node_modules` в Git, этот репозиторий теперь игнорирует их и удаляет из отслеживания Git (рекомендуемая практика). После получения этих изменений выполните команду `npm install`, чтобы восстановить зависимости локально.
 
 ## ENV variables
 
@@ -72,52 +86,4 @@ Frontend default: `http://localhost:3000` (or next free port)
 ## Test accounts (dev seed)
 - **login**: `user1` … `user50`
 - **password**: `Test12345!` (or `SEED_PASSWORD`)
-
-## Manual test plan (UI)
-- Open app, verify top bar:
-  - left: burger button
-  - right: auth block
-- Click burger:
-  - closed: menu not present in DOM
-  - open: compact menu panel (not fullscreen), closes on item click/outside click
-  - menu items: “Главная”, “Аккаунт”
-- Auth:
-  - Click “Вход / Регистрация”
-  - Login as `user7` / `Test12345!` → top-right shows current user
-  - Click “Выйти” → becomes anonymous
-  - Register a new user → auto-login, then logout/login as another
-
-## cURL test plan
-
-> Note: cookie session is stored in `cookies.txt`.
-
-Register:
-
-```bash
-curl -i -c cookies.txt -H "Content-Type: application/json" ^
-  -d "{\"login\":\"newuser1\",\"password\":\"Test12345!\"}" ^
-  http://localhost:4000/auth/register
-```
-
-Login:
-
-```bash
-curl -i -c cookies.txt -H "Content-Type: application/json" ^
-  -d "{\"login\":\"user7\",\"password\":\"Test12345!\"}" ^
-  http://localhost:4000/auth/login
-```
-
-Me:
-
-```bash
-curl -i -b cookies.txt http://localhost:4000/me
-```
-
-Logout:
-
-```bash
-curl -i -b cookies.txt -X POST -H "Content-Type: application/json" ^
-  -d "{}" ^
-  http://localhost:4000/auth/logout
-```
 

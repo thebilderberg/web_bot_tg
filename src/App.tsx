@@ -16,8 +16,6 @@ function AppBody() {
   return (
     <div className="App-content">
       <div className="App-title">Hello world</div>
-      <p className="App-text">Это новый текстовый элемент</p>
-      <p className="App-text">hello world69</p>
     </div>
   );
 }
