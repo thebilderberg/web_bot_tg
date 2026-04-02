@@ -10,6 +10,7 @@ function App() {
           <BurgerMenu />
           Hello world
           <p className="App-text">Это новый текстовый элемент</p>
+          <p className="App-text">hello world69</p>
         </div>
       </header>
     </div>
